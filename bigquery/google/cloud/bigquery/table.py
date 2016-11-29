@@ -803,7 +803,9 @@ class Table(object):
                          quote_character=None,
                          skip_leading_rows=None,
                          write_disposition=None,
-                         client=None):
+                         client=None,
+                         autodetect=False,
+                         schemaUpdateOptions=[]):
         """Upload the contents of this table from a file-like object.
 
         The content type of the upload will either be
@@ -918,9 +920,7 @@ class Table(object):
             'configuration': {
                 'load': {
                     'sourceFormat': source_format,
-                    'schema': {
-                        'fields': _build_schema_resource(self._schema),
-                    },
+                    'autodetect': autodetect,
                     'destinationTable': {
                         'projectId': self._dataset.project,
                         'datasetId': self._dataset.name,
@@ -929,6 +929,11 @@ class Table(object):
                 }
             }
         }
+
+        if not autodetect:
+            metadata['configuration']['load']['schema'] = {'fields': _build_schema_resource(self.schema)}
+        else:
+            metadata['configuration']['load']['schemaUpdateOptions'] = schemaUpdateOptions
 
         _configure_job_metadata(metadata, allow_jagged_rows,
                                 allow_quoted_newlines, create_disposition,
