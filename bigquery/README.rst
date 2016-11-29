@@ -64,7 +64,8 @@ Load data from CSV
 
     with open('csv_file', 'rb') as readable:
         table.upload_from_file(
-            readable, source_format='CSV', skip_leading_rows=1)
+            readable, source_format='CSV', skip_leading_rows=1, autodetect=True, 
+            schemaUpdateOptions=['ALLOW_FIELD_ADDITION','ALLOW_FIELD_RELAXATION']))
 
 Perform a synchronous query
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
